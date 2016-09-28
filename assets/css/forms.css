@@ -1,0 +1,54 @@
+
+input[type="text"].rounded {
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    -webkit-border-radius:10px;
+    border-radius: 10px;
+    border: none;
+    text-align: center;
+    width: 100%;
+}
+
+input:not([type="checkbox"]):not(.close), textarea {
+    width: 100%;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+input[type="text"], textarea {
+    border: 1px solid rgba(30, 30, 30, 0.1);
+}
+
+input#title {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+input.discreet, select.discreet {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+button:not(.close) {
+    margin: 0;
+    background-color: rgba(30, 30, 30, 0.1);
+    color: #333;
+    border: none;
+    text-align: center;
+}
+
+button:not(.close):not(.tag) {
+    width: 100%;
+}
+
+.form-inline-box {
+    width: 100%;
+    display: table;
+}
+.form-inline {
+    display: table-cell;
+}

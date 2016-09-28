@@ -1,0 +1,16 @@
+span.irs.link(ng-if="file.type == 'dir'", ng-click="FileManager.openDir(file);", ng-class="{'tree-item-open': file.angle == 'down'}")
+  i.fa.fa-fw(class="fa-angle-{{ file.angle }} fa-small")
+  | &nbsp;
+  i.fa.fa-folder.fa-small
+  | &nbsp; {{ file.name }}
+
+// File
+span.irs.link(ng-if="file.type == 'file'", ng-class="{'tree-item-': file.isOpened}", ng-click="FileManager.openFile(file)")
+    i.fa.fa-fw.fa-small
+    | &nbsp;
+    i.fa.fa-file-text-o.fa-small
+    | &nbsp;&nbsp;{{ file.name }}
+
+// Nodes
+ul.irs.file-exp
+    li.irs.file-exp(ng-repeat="file in file.nodes", ng-include="'assets/templates/fm-tree-item.html'")

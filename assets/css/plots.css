@@ -1,0 +1,107 @@
+/* d3 */
+.axis path {
+    fill: none;
+    stroke: #222;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-size: 13px;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, sans-serif;
+    font-weight: 300;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+.grid path {
+    stroke-width: 0;
+}
+
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1px;
+}
+
+.node text {
+    font-size: 12px;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, sans-serif;
+    font-weight: 300;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1px;
+}
+
+.home-bg {
+    background-image: url('../img/pattern.png');
+}
+
+.irs.terminal-output {
+    white-space: pre;
+    font-family: monospace;
+}
+
+
+.box {
+    font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+    fill: #fff;
+    stroke: rgb(154, 179, 205);
+    stroke-width: 1.5px;
+}
+
+.box .center {
+    stroke-dasharray: 1,1;
+}
+
+.box .outlier {
+    fill: none;
+    stroke: #ccc;
+}
+
+
+svg {
+    font: 10px sans-serif;
+}
+
+.background path {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+}
+
+.foreground path {
+    fill: none;
+    stroke: rgb(82, 154, 190);
+}
+
+.brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+}
+
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    cursor: move;
+}

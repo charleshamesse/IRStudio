@@ -1,0 +1,75 @@
+doctype html
+html(lang="en", ng-app="app", ng-cloak)
+head
+    meta(charset="utf-8")
+    title IR Studio
+
+    link(rel="stylesheet", type="text/css", href="assets/css/bootstrap.min.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/jquery-ui.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/font-awesome.min.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/global.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/nav.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/settings.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/forms.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/plots.css")
+    link(rel="stylesheet", type="text/css", href="assets/css/editors.css")
+
+    script(type="text/javascript") window.$ = window.jQuery = require('jquery');
+    script(src="assets/js/jquery-ui.js")
+    script(src="assets/js/global.js")
+    script(src="assets/js/angular.min.js")
+    script(src="assets/js/angular-sanitize.js")
+    script(src="assets/js/svgtopng.js")
+
+    script(src="app/index.js")
+    script(src="app/factories/d3.js")
+    script(src="app/factories/file-manager.js")
+    script(src="app/factories/r-scripts.js")
+    script(src="app/services/file-parser.js")
+    script(src="app/services/file-writer.js")
+    script(src="app/services/result-parser.js")
+    script(src="app/services/explorer.js")
+    script(src="app/services/irace-tools.js")
+    script(src="app/controllers/index.js")
+    script(src="app/controllers/setup.js")
+    script(src="app/controllers/launch.js")
+    script(src="app/controllers/results.js")
+
+body(ng-controller="IndexController")
+    div.container-fluid(style="padding:0; height: 100%;")
+        div.row(style="margin:0; height: 100%;")
+            div.col-xs-2(id="nav")
+                div#search
+                    input.rounded(type="text", placeholder="Search..", ng-model="fmtreefilter")
+                div#tree
+                    ul.file-exp
+                        li.file-exp(ng-repeat="file in FileManager.tree | filter: fmtreefilter", ng-include="'assets/templates/fm-tree-item.html'")
+
+            div(id="main", ng-class="{'col-xs-10': !Index.displaySettings, 'col-xs-8': Index.displaySettings}")
+                div#tabs(ng-show="FileManager.filesOpened.length > 0")
+                    div.tab(ng-repeat="file in FileManager.filesOpened", ng-click="FileManager.viewFile(file)", ng-class="{active: file.active}") {{ file.name }}
+                        button.close.close-tab(type="button" ng-click="FileManager.close($index);") ×
+                div#content
+                    div(ng-repeat="file in FileManager.filesOpened", ng-show="file.active", ng-include="file.editor")
+                    div.padding.home-container(ng-show="FileManager.filesOpened.length == 0", ng-include="'assets/templates/home.html'")
+
+            div(id="settings", ng-class="{'hidden': !Index.displaySettings, 'col-xs-2': Index.displaySettings}")
+                div.head Settings
+                div.section
+                    div.head General
+                    input(type="checkbox", ng-model="Index.config['autoSave']")
+                    | Auto-save files
+                    br
+                    input(type="checkbox", ng-model="Index.config['displayHiddenFiles']", ng-change="FileManager.refresh()")
+                    | Display hidden files
+                div.section
+                    div.head Workspace
+                    div.form-inline-box
+                        div.form-inline
+                            input.rounded(type="text", ng-model="Index.config['workspace']")
+                        div.form-inline(align="center")
+                            i.button-icon.fa.fa-search(aria-hidden="true",ng-click="alert('uo')")
+                div.section
+                    div.head R Scripts
+                div.section
+                    div(ng-show="!$scope.Index.existsConfig") Your configuration needs to be updated.

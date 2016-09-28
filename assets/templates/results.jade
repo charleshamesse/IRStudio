@@ -1,0 +1,73 @@
+script(src='assets/js/svgtopng.js')
+div.editor(ng-controller='ResultsController', ng-init='Results.file = file; Results.prepare();')
+    div.row.results
+        .col-sm-12
+            // Header
+            .row
+                .col-sm-1
+                    h2 Title:
+                .col-sm-8
+                    input#title(ng-model='Results.file.content.content.text.title', type='text', placeholder='Insert title here..')
+                .col-sm-3
+                    button(ng-click='Results.exportToLatex();') Export to LaTeX
+            .spacer.small
+            .row
+                .col-sm-1
+                    h3 Author:
+                .col-sm-11
+                    input(type="text", ng-model='Results.file.content.content.text.author', placeholder='Insert author name here..')
+            .spacer.small
+            .row
+                .col-sm-12
+                    textarea.irs.comment(ng-model='Results.file.content.content.text.abstract', rows='2', cols='50', placeholder='Insert abstract here..')
+            .spacer
+
+            // Results
+            div(ng-if="Results.file.content.content.command.type != 'irace'")
+                .col-sm-12
+                    h2 Results
+                .col-sm-12
+                    h3 Line plot
+                    d3-ordinal-line(data='d3Data', id='linePlot-{{ Results.file.name  }}', label='name')
+                .col-sm-12
+                    textarea.irs.comment(ng-model='Results.file.content.content.text.firstGraph', rows='4', cols='50', placeholder='Insert comments here..')
+                .col-sm-12
+                    h3 Tree
+                    div(style='overflow-x: auto;')
+                        d3-vertical-tree(data='d3TreeData', id='treePlot-{{ Results.file.name  }}', label='name')
+                .col-sm-12
+                    textarea.irs.comment(ng-model='Results.file.content.content.text.secondGraph', rows='4', cols='50', placeholder='Insert comments here..')
+            div(ng-if="Results.file.content.content.command.type == 'irace'")
+                .col-sm-12
+                    h2 Results
+                .col-sm-12
+                    h3 iRace information
+                    .spacer
+                    p(ng-repeat='line in iraceInfo') {{ line }}
+                .col-sm-12
+                    h3 Elite candidates performance
+                    div(style='overflow-x: auto;')
+                        d3-box-plot(data='d3BoxPlotData', id='boxPlot-{{ Results.file.name  }}', label='name')
+                .col-sm-12
+                    h3 Best candidates comparison
+                    div(style='min-width: 100%; overflow-x: auto;')
+                        d3-parallel-coordinates-plot(data='d3ParallelCoordinatesPlotData', id='parallelCoordinatesPlot-{{ Results.file.name  }}', label='name')
+                .col-sm-12
+                    h3 Iteration elites
+                    div(style='overflow-x: auto;')
+                        d3-box-plot(data='d3BoxPlotData2', id='boxPlot2-{{ Results.file.name  }}', label='name')
+            // Conclusion and scenario data
+            .col-sm-12
+                h2 Conclusion
+            .col-sm-12
+                textarea.irs.comment(ng-model='Results.file.content.content.text.conclusion', rows='6', cols='50', placeholder='Insert conclusion here..')
+            .col-sm-12
+                h2 Scenario review
+            .col-sm-12
+                input(type='radio', checked='', ng-model='Results.scenarioExportType', name='scenarioExportType', value='short')
+                strong Short version:
+                | number of parameters of each type and selected candidates.
+                br
+                input(type='radio', ng-model='Results.scenarioExportType', name='scenarioExportType', value='long')
+                strong Long version:
+                | complete parameter space description, number of instances, file paths and selected candidates

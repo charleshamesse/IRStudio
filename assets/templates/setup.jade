@@ -1,0 +1,153 @@
+div.editor(ng-controller="SetupController", ng-init="Setup.file = file")
+    div.row.grid-right-panel
+        div.border-right(ng-class="{'col-md-9': Setup.display.history, 'col-md-1': !Setup.display.history}", style="overflow-y: auto;")
+            div.row
+                div.col-sm-6
+                    h2
+                        i.button-icon.fa.fa-fw(ng-class="{'fa-angle-down': Setup.display.instances, 'fa-angle-right': !Setup.display.instances}", ng-click="Setup.display.instances = !Setup.display.instances")
+                        | Instances
+                    div.form-inline-box(ng-show="Setup.display.instances")
+                        div.form-inline
+                            input(type="text", ng-model="file.content.content.instances.training_uri", placeholder="Training instances")
+                        div.form-inline
+                            button(ng-click="Setup.openInstances(0);") Import
+
+                    div.spacer(ng-show="Setup.display.instances")
+
+                    div.form-inline-box(ng-show="Setup.display.instances")
+                        div.form-inline
+                            input(type="text", ng-model="file.content.content.instances.testing_uri", placeholder="Testing instances")
+                        div.form-inline
+                            button(ng-click="Setup.openInstances(1);") Import
+
+                div.col-sm-6
+                    h2
+                        i.button-icon.fa.fa-fw(ng-class="{'fa-angle-down': Setup.display.hookrun, 'fa-angle-right': !Setup.display.hookrun}", ng-click="Setup.display.hookrun = !Setup.display.hookrun")
+                        | Hook-run method
+                    div.form-inline-box(ng-show="Setup.display.hookrun")
+                        div.form-inline
+                            input(type="text", ng-model="file.content.content.hookrun_uri", placeholder="Hook-run method path")
+                        div.form-inline
+                            button(ng-click="Setup.openHookRun();") Import
+            div.spacer
+
+            // Parameters
+            div.row
+                div.col-xs-8
+                    h2
+                        i.button-icon.fa.fa-fw(ng-class="{'fa-angle-down': Setup.display.parameters, 'fa-angle-right': !Setup.display.parameters}", ng-click="Setup.display.parameters = !Setup.display.parameters")
+                        | Parameters
+                div.col-xs-4(align="right", ng-show="Setup.display.parameters")
+                    div.form-inline-box
+                        div.form-inline
+                            span.link
+                                i.fa.fa-fw(ng-class="{'fa-lock': Setup.parameterLock, 'fa-unlock': !Setup.parameterLock}", ng-click="Setup.parameterLock = !Setup.parameterLock")
+                        div.form-inline
+                            input(type="text", ng-model="searchParameters", placeholder="Filter parameters..")
+                div.col-sm-12(ng-show="Setup.display.parameters")
+                    table(cellspacing="10", cellpadding="5", style="width: 100%;")
+                        tr.head
+                            td.parameter-idx.padding-r #
+                            td.parameter-data Name
+                            td.parameter-data Switch 
+                            td.parameter-type Type 
+                            td.parameter-data Values
+                            td.parameter-conditions Conditions
+                    div.overflow-tbody
+                        table(cellspacing="10", cellpadding="5", style="width: 100%;")
+                            tr(ng-repeat="parameter in Setup.file.content.content.parameters | filter: searchParameters")
+                                fieldset(ng-disabled="Setup.parameterLock")
+                                    td.parameter-idx.padding-r {{ $index+1 }}
+                                    td.parameter-data
+                                        input.discreet.parameter(ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }", ng-change="Setup.notifyParameterChange(parameter);", ng-disabled="Setup.parameterLock", type="text", ng-model="parameter.name")
+                                    td.parameter-data
+                                        input.discreet.parameter(ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }", ng-change="Setup.notifyParameterChange(parameter);", ng-disabled="Setup.parameterLock", type="text", ng-model="parameter.switch")
+                                    td.parameter-type
+                                        select(ng-change="Setup.notifyParameterChange(parameter);", ng-model="parameter.type", ng-disabled="Setup.parameterLock", class="irs large discreet")
+                                            option(value="i") Integer
+                                            option(value="c") Categorical
+                                            option(value="r") Real
+                                            option(value="o") Order
+                                    td.parameter-data
+                                        input.discreet.parameter(ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }", ng-change="Setup.notifyParameterChange(parameter);", ng-disabled="Setup.parameterLock", type="text", ng-model="parameter.values")
+                                    td.parameter-conditions
+                                        input.discreet.parameter(ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }", ng-change="Setup.notifyParameterChange(parameter);", ng-disabled="Setup.parameterLock", type="text", ng-model="parameter.conditions")
+                    div(ng-if="(Setup.file.content.content.parameters | filter: searchParameters).length == 0")
+                        | No result found.
+            div.row.padding(ng-show="Setup.display.parameters")
+                div.col-sm-4.nopadding
+                    button(ng-click="Setup.plotDepencyTree(); Setup.displayParameterTree = !Setup.displayParameterTree")
+                        span(ng-show="!Setup.displayParameterTree")  Plot
+                        span(ng-show="Setup.displayParameterTree") Hide
+                        |  dependency tree
+                div.col-sm-4.nopadding
+                    button(ng-click="Setup.importParameters();") Import from file
+                div.col-sm-4.nopadding
+                    button(ng-click="Setup.exportParameters();") Save file
+
+            div(ng-show="Setup.displayParameterTree")
+                div(style="overflow-x: auto;")
+                    d3-horizontal-tree#treePlot(data="Setup.parameterTreeData", label="name")
+                a(href="", ng-click="displayParameterTreeString = !displayParameterTreeString")
+                    span(ng-show="!displayParameterTreeString") Display
+                    span(ng-show="displayParameterTreeString") Hide
+                    |  raw parameter tree (with level and number of children) 
+                pre(ng-show="displayParameterTreeString") {{ Setup.parameterTreeData | json }}
+            div.spacer
+
+            // Candidates
+            div.row
+                div.col-xs-8
+                    h2
+                        i.button-icon.fa.fa-fw(ng-class="{'fa-angle-down': Setup.display.candidates, 'fa-angle-right': !Setup.display.candidates}", ng-click="Setup.display.candidates = !Setup.display.candidates")
+                        | Candidates
+                div.col-xs-4(align="right", ng-show="Setup.display.candidates")
+                    input(type="text", ng-model="searchCandidates", class="irs", placeholder="Filter candidates..")
+                div.col-xs-12(ng-show="Setup.display.candidates")
+                    div.overflow-table
+                        table(cellspacing="10" cellpadding="5")
+                            tr.head
+                                td.candidate-idx.padding-r #
+                                td.candidate-actions Actions
+                                td.candidate-label
+                                    strong Label
+                                td.candidate-data(ng-repeat="parameter in Setup.file.content.content.candidates.parameters track by $index")
+                                    | {{ parameter }}
+                        table(cellspacing="10", cellpadding="5")
+                            tr(ng-repeat="candidate in Setup.file.content.content.candidates.candidates | filter: searchCandidates")
+                                td.candidate-idx.padding-r {{ $index+1 }}
+                                td.candidate-actions
+                                    a(href="", ng-click="candidate.lock = !candidate.lock")
+                                        i.fa.fa-fw(ng-class="{'fa-lock': candidate.lock, 'fa-unlock': !candidate.lock}")
+                                    | &nbsp;&nbsp; 
+                                    input(type="checkbox", aria-label="Use candidate", ng-model="candidate.selected")
+                                    | &nbsp;&nbsp; 
+                                    a(href="", ng-click="Setup.deleteCandidate($index);")
+                                        i.fa.fa-trash
+                                td.candidate-label
+                                    input.discreet.candidate-label( ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0}}", ng-change="Setup.notifyCandidateChange(candidate);", ng-disabled="candidate.lock", type="text", ng-model="candidate.label")
+                                td.candidate-data(ng-repeat="parameter in Setup.file.content.content.candidates.parameters track by $index")
+                                    input.discreet(ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }", ng-change="Setup.notifyCandidateChange(candidate);", ng-disabled="candidate.lock", type="text", ng-model="candidate.values[$index]")
+
+                    div(ng-if="(Setup.file.content.content.candidates.candidates | filter: searchCandidates).length == 0")
+                        | No result found.
+
+            div.row.padding(ng-show="Setup.display.candidates")
+                div.col-sm-3.nopadding
+                    button(ng-click="Setup.allSelected = !Setup.allSelected; Setup.selectAll();") Select all
+                div.col-sm-3.nopadding
+                    button(ng-click="Setup.newCandidate();") New candidate 
+                div.col-sm-3.nopadding
+                    button(ng-click="Setup.openCandidates();") Import from file
+                div.col-sm-3.nopadding
+                    button(ng-click="Setup.exportCandidates();") Save file
+
+        div.padding.history(ng-class="{'col-md-3': Setup.display.history, 'col-md-2': !Setup.display.history}")
+            h2
+                i.button-icon.fa.fa-fw(ng-class="{'fa-angle-down': Setup.display.history, 'fa-angle-left': !Setup.display.history}", ng-click="Setup.display.history = !Setup.display.history")
+                span(ng-show="Setup.display.history") History
+            div(ng-show="Setup.display.history")
+                div(ng-if="Setup.file.content.content.history.length == 0")  Logs for this file are empty. 
+                div(ng-repeat="h in Setup.file.content.content.history track by $index")
+                    strong {{ h.date | date:'medium' }}
+                    | <br /> {{ h.text }}<br /><br /> 

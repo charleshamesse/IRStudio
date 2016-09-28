@@ -1,0 +1,34 @@
+#settings {
+    background-color: rgba(60, 60, 60, 0.8);
+    height: 100%;
+    resize: horizontal;
+    color: #cccccc;
+    padding: 0px;
+}
+
+.hidden {
+    width: 0px;
+    max-width: 0px;
+}
+
+
+#settings > .head {
+    text-align: center;
+    margin: 15px;
+    font-weight: 300;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#settings > .section {
+    margin: 0 15px 15px 15px;
+    color: #ccc;
+}
+#settings > .section > .head {
+    text-transform: uppercase;
+    color: #9f9f9f;
+    letter-spacing: -0.3px;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+

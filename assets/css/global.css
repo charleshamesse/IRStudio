@@ -1,0 +1,140 @@
+/* Global ---------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+    font-family: 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.5;
+    overflow: hidden; /* Prevents rubber-band scrolling of the whole "page" */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height:100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 1.3em;
+  font-weight: normal;
+}
+
+h3 {
+  font-size: 1.12em;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  border-spacing: 0;
+  border: 1px solid hsla(0,0%,0%,.08);
+  border-width: 0 1px 1px 0;
+}
+th {
+  background-color: hsla(0,0%,50%,.06);
+}
+th,
+td {
+  text-align: center;
+  border: 1px solid hsla(0,0%,0%,.08);
+  border-width: 1px 0 0 1px;
+}
+
+#main {
+    background-color: #fff;
+    height: 100%;
+    padding: 0;
+}
+
+#tabs {
+    width: 100%;
+    margin:0;
+    padding: 0;
+    border: 0;
+    overflow-x: auto;
+    display: table;
+    border-collapse: collapse;
+    border-bottom:3px solid #f0f0f0;
+}
+
+#tabs > .tab {
+    font-weight: 300;
+    min-width: 200px;
+    display: table-cell;
+    border: none; /*1px solid rgb(190, 190, 190); */
+    background: #dfdfdf;
+    border-top: none;
+    margin: 0;
+    line-height: 30px;
+    height: 30px;
+    color: #222;
+    text-align: center;
+}
+#tabs > .tab.active {
+    background-color: #f0f0f0;
+    /* background: -webkit-linear-gradient(top, #d4d4d4 0%,#cacaca 100%); */
+}
+button.close-tab {
+    line-height: 30px;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+
+:focus, .btn:focus, :active {
+    outline: 0 !important;
+    outline-color: transparent !important;
+    outline-style: none !important;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+i.button-icon {
+    cursor: pointer;
+}
+
+.padding {
+    padding: 15px;
+}
+.nopadding {
+    padding: 0;
+}
+.spacer {
+    height: 25px;
+}
+
+.spacer.small {
+    height: 5px;
+}
+
+#content {
+    height: 100%;
+}
+#content > div {
+    height: 100%;
+}
+
+
+.home-container {
+    background-image: url('../img/pattern.png');
+    height: 100%;
+}
+
+.home-container img {
+    margin: 50px;
+}

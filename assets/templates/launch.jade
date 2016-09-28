@@ -1,0 +1,180 @@
+.editor(ng-controller='LaunchController', ng-init='Launch.file = file; Launch.prepare();')
+    .row.grid-right-panel
+        .col-sm-12.border-right(ng-class="{'col-md-9': Launch.display.history, 'col-md-1': !Launch.display.history}", style='overflow-y: auto;')
+            .row
+                .col-sm-6
+                    h2
+                        i.fa.fa-fw(ng-class="{'fa-angle-down': Launch.display.new, 'fa-angle-right': !Launch.display.new}", ng-click='Launch.display.new = !Launch.display.new')
+                        |  New exploration
+                    div(ng-show='Launch.display.new')
+                        .form-inline-box
+                            .form-inline
+                                input(type='text', ng-model='Launch.file.content.content.scenario_uri', ng-change='Launch.scenarioLoaded = true', placeholder='Scenario path')
+                            .form-inline
+                                button(ng-click='Launch.openScenario();') Import
+                            .form-inline(ng-show='Launch.file.content.content.scenario_uri')
+                                button(ng-click='Launch.reloadScenario();') Reload
+                        br
+                        strong Last modification:
+                        |  {{ Launch.scenario.content.history[0].date | date:'medium' }}
+                        br
+                        strong Number of candidates:
+                        |  {{ Launch.scenario.content.candidates.candidates.length || 0 }}
+                        br
+                        strong Instances:
+                        |  {{ Launch.instancesInfo[0] }} for training, {{ Launch.instancesInfo[1] }} for testing
+                .col-sm-6(ng-show='Launch.display.new')
+                    h2 Application
+                    div
+                        select.irs.large(ng-model='Launch.command.type', ng-change='Launch.applicationSelected = true')
+                            option(value='select') Select..
+                            option(value='irace', selected='') Irace
+                            option(value='ablation') Ablation
+                            option(value='full') Full Exploration
+                    br
+                    | You will be able to provide additional settings after selecting an application.
+                    .form-inline-box
+                        .form-inline Number of CPU cores to use:
+                        .form-inline
+                            input.irs.nomargin(type='text', size='4', ng-model='Launch.command.parallel')
+            .spacer(ng-if='Launch.display.new')
+            // Second section
+            .row(ng-show='Launch.scenarioLoaded && Launch.display.new')
+                .col-sm-12
+                    .row
+                        // Candidates
+                        .col-sm-12
+                            .row
+                                .col-sm-6
+                                    h2
+                                        | Initial candidate
+                                        span(ng-show="Launch.command.type!='full'") s
+                                .col-sm-6(align='right')
+                                    input(type='text', ng-model='searchCandidates', placeholder='Filter candidates..')
+                            span.text-warning(ng-show="Launch.command.type=='select'") Please select an application.
+                            span(ng-show="Launch.command.type=='full'") Choose 1 candidate amongst the following:
+                            span(ng-show="Launch.command.type=='ablation'") Choose 2 candidates amongst the following:
+                            span(ng-show="Launch.command.type=='irace'") Choose any number of candidates amongst the following:
+                            .spacer
+                            .overflow-table(style='min-width: 100%')
+                                table(cellspacing='10', cellpadding='5', style='min-width: 100%')
+                                    tr.head
+                                        td.candidate-idx.padding-r #
+                                        td.candidate-actions Use
+                                        td.candidate-label
+                                            strong Label
+                                        td.candidate-data(ng-repeat='parameter in Launch.scenario.content.candidates.parameters track by $index')
+                                            | {{ parameter }}
+                                table(cellspacing='10', cellpadding='5', style='min-width: 100%')
+                                    tr.candidate(ng-repeat='candidate in Launch.scenario.content.candidates.candidates | filter: searchCandidates track by $index')
+                                        td.candidate-idx.padding-r {{ $index+1 }}
+                                        td.candidate-actions
+                                            input(ng-show="Launch.command.type=='full'", type='radio', ng-model='Launch.selectedCandidate', value='{{ $index }}')
+                                            input(ng-show="Launch.command.type!='full'", type='checkbox', ng-model='candidate.selected', value='{{ $index }}')
+                                        td.candidate-label {{ candidate.label }}
+                                        td.candidate-data(ng-repeat='parameter in Launch.scenario.content.candidates.parameters track by $index')
+                                            | {{ candidate.values[$index] }}
+                                div(ng-if='(Launch.scenario.content.candidates.candidates | filter: searchCandidates).length == 0')
+                                    | No result found.
+                    .spacer
+
+                    // Parameters
+                    .row
+                        .col-sm-6
+                            h2 Parameter selection
+                        .col-sm-6(align='right')
+                            input.irs(type='text', ng-model='searchParameters', placeholder='Filter parameters..')
+                    .spacer
+                    .row
+                        .col-sm-9
+                            .overflow-tbody
+                                button.tag(ng-click='p.selected = !p.selected;', ng-repeat='p in Launch.parameterSelection | filter:searchParameters track by $index', type='button', ng-mouseover='Launch.viewParameter(p);')
+                                    input(type='checkbox', aria-label='Use candidate', ng-model='p.selected')
+                                    |  {{ p.name }}
+                        .col-sm-3.irs.parameter-view(ng-show='Launch.hoverParameter')
+                            strong {{ Launch.hoverParameter.name }}
+                            br
+                            | type: {{ Launch.parameterTypes[Launch.hoverParameter.type].name }}
+                            br
+                            | switch: "{{ Launch.hoverParameter.switch }}"
+                            br
+                            | values: {{ Launch.hoverParameter.values }}
+                            br
+                            | conditions: {{ Launch.hoverParameter.conditions || "none" }}
+
+                    div(ng-show="Launch.command.type == 'irace'")
+                        .row
+                            .col-sm-12
+                                h2 Forbidden candidates
+                        .row
+                            .col-sm-12
+                                .form-inline-box
+                                    .form-inline
+                                        input.irs.large(type='text', ng-model='Launch.forbiddenCandidates', placeholder='Forbidden candidates file')
+                                    .form-inline
+                                        button.irs.large(ng-click='Launch.openForbiddenCandidates();') Import
+                        .spacer
+            .spacer(ng-if='Launch.display.new')
+            .row(ng-show='Launch.applicationSelected && Launch.display.new')
+                .col-sm-12
+                    .form-inline-box
+                        .form-inline(style='width:50%;')
+                            input(type='text', ng-model='Launch.explorationName', placeholder='Enter a name for this exploration..')
+                        .form-inline(style='width:50%;')
+                            button(ng-click='Launch.launchExploration();') Launch
+            .spacer(ng-if='Launch.display.new')
+            // Terminal output
+            div(ng-show='Launch.isLaunched && Launch.display.new')
+                strong Exploration launched in:
+                | {{ Launch.dirInfo }}
+            .terminal-output(ng-show='Launch.isLaunched && Launch.display.new', ng-bind-html='Launch.result')
+            .row(ng-show='Launch.isLaunched && Launch.display.new')
+                .col-sm-12
+                    button.large(ng-click='Launch.export();') Create report
+            // Batch export
+            .spacer
+            .row
+                .col-sm-12
+                    h2
+                        i.fa.fa-fw(ng-class="{'fa-angle-down': Launch.display.export, 'fa-angle-right': !Launch.display.export}", ng-click='Launch.display.export = !Launch.display.export')
+                        |  Batch export
+                    div(ng-show='Launch.display.export')
+                        | The following explorations have already been executed in this context:
+                        .spacer
+                        .list-group
+                            span.list-group-item(ng-class="{'list-group-hover': e.selected}", ng-click='e.selected = !e.selected', ng-repeat='e in Launch.file.content.content.explorations track by $index')
+                                h4.list-group-item-heading
+                                    input(ng-model='e.selected', type='checkbox')
+                                    |  {{ e.name }}
+                                    small {{ e.command.type }}
+                                p.list-group-item-text
+                                    | From {{ e.dates[0] | date:'medium'}} to {{ e.dates[1] | date:'medium'}}
+                                    br
+                                    |               In {{ e.dir }}
+                                    a(href='', ng-click='Launch.file.content.content.explorations.splice($index, 1);')
+                                        span.pull-right delete
+                        button(ng-click='Launch.batchExport();')
+                            | Export selected explorations
+        .padding.history(ng-class="{'col-md-3': Launch.display.history, 'col-md-2': !Launch.display.history}")
+            h2
+                i.fa.fa-fw(ng-class="{'fa-angle-down': Launch.display.history, 'fa-angle-left': !Launch.display.history}", ng-click='Launch.display.history = !Launch.display.history')
+                span(ng-show='Launch.display.history') History
+            div(ng-show='Launch.display.history')
+                div(ng-if='Launch.file.content.content.history.length == 0')
+                    | Logs for this file are empty.
+                div(ng-repeat='h in Launch.file.content.content.history track by $index', ng-mouseover='')
+                    strong {{ h.date | date:'medium' }}
+                    br
+                    | {{ h.text }}
+                    a(href='', ng-click='h.showMore = !h.showMore')
+                        span(ng-show='!h.showMore') more..
+                    br
+                    span.irs.history-more(ng-show='h.showMore')
+                        | {{ h.more }}
+                        br
+                        a(href='', ng-click='Launch.file.content.content.history.splice($index, 1);') delete entry
+                        | &nbsp;
+                        a(href='', ng-click='h.showMore = !h.showMore')
+                            span(ng-show='h.showMore') hide
+                    br
+                    br
