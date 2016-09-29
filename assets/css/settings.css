@@ -35,4 +35,10 @@
 
 #reset-configuration {
     color: #f43431;
+    background-color: rgba(30, 30, 30, 0.3);
+}
+
+#save-configuration {
+    color: #51d441;
+    background-color: rgba(30, 30, 30, 0.3);
 }

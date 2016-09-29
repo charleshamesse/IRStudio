@@ -45,6 +45,7 @@ angular.module('app')
                 console.log("There isn't any config file. Error: " + e);
             }
             $scope.Index.existsConfig = existsConfig
+            console.log('it exists? ' + $scope.Index.existsConfig);
         }
         testConfig();
 
@@ -52,7 +53,7 @@ angular.module('app')
             try {
                 // write on config file, exists it or not.
                 fs.writeFileSync(configPath, JSON.stringify($scope.Index.config), 'utf8');
-                // Also write R scripts (if cfg present, rscripts present)
+                // Also rewrite R scripts (if cfg present, rscripts present)
                 FileWriter.writeRScripts(app.getPath("userData") + mpath.sep);
 
                 testConfig();
@@ -70,6 +71,10 @@ angular.module('app')
             catch (e) {
                 console.log('Error resetting configuration: ' + e)
             }
+        }
+
+        $scope.Index.saveConfiguration = function() {
+            saveConfig();
         }
 
         $scope.Index.resetConfiguration = function() {

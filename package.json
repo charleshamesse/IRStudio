@@ -1,27 +1,25 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "IRStudio",
+  "version": "0.2.0",
+  "description": "Optimization studio",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron/electron-quick-start.git"
+    "url": "git+https://github.com/charleshamesse/IRStudio.git"
   },
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial"
+    "IRStudio",
+    "Optimization"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Charles Hamesse",
   "bugs": {
-    "url": "https://github.com/electron/electron-quick-start/issues"
+    "url": "https://github.com/charleshamesse/IRStudio/issues"
   },
-  "homepage": "https://github.com/electron/electron-quick-start#readme",
+  "homepage": "https://github.com/charleshamesse/IRStudio#readme",
   "dependencies" :{
     "d3": "^3.5.16",
     "fix-path": "^2.0.0"

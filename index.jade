@@ -71,7 +71,14 @@ body(ng-controller="IndexController")
                             i.button-icon.fa.fa-search(aria-hidden="true",ng-click="Index.openWorkspaceDialog()")
                 div.section
                     div.head R Scripts
+                    div.form-inline-box
+                        div.form-inline
+                            input.rounded(type="text", ng-model="Index.config['rscripts']")
+                        div.form-inline(align="center")
+                            i.button-icon.fa.fa-search(aria-hidden="true",ng-click="Index.openRScriptsDialog()")
                 div.section
-                    div(ng-show="!$scope.Index.existsConfig") Your configuration needs to be updated.
-                        br
-                        button#reset-configuration(ng-click="Index.resetConfiguration()") Reset configuration
+                    div(ng-show="!Index.existsConfig") Your configuration needs to be updated.
+                        .spacer.small
+                    button#save-configuration(ng-click="Index.saveConfiguration()") Save configuration
+                    .spacer.small
+                    button#reset-configuration(ng-click="Index.resetConfiguration()") Reset configuration
