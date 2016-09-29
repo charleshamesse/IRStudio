@@ -70,10 +70,7 @@ angular.module('app')
         // Open file or directory
         FileManager.open = function(attr_path) {
             var dialog_path, f, final_path;
-            if(!attr_path) {
-                if(dialog_path = dialog.showOpenDialog(options)) {
-                    final_path = dialog_path[0];
-                }
+            if(!attr_path) {options
             }
             else {
                 if(attr_path == "-r") {

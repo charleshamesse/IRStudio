@@ -1,13 +1,15 @@
 angular.module('app')
-    .controller('IndexController', function ($scope, FileManager) {
+    .controller('IndexController', function ($scope, FileManager, FileWriter) {
 
         const   remote = require('electron').remote,
                 {app} = require('electron').remote,
+                {dialog} = require('electron').remote,
                 Menu = remote.Menu,
                 fs = require('fs'),
                 mpath = require('path'),
                 configPath = app.getPath("userData") + mpath.sep + "cfg.json";
 
+        // Settings - later on this should be refactored in a config service or so
         let config = {
             'displayHiddenFiles': false,
             'autoSave': false,
@@ -16,6 +18,9 @@ angular.module('app')
             'iscript': ''
         },
             getConfig = function() { return config; }
+
+        // File Manager
+        $scope.FileManager = FileManager(getConfig);
 
         $scope.Index = {
             'displaySettings': false,
@@ -29,10 +34,10 @@ angular.module('app')
                 if (fs.statSync(configPath).isFile()) {
                     existsConfig = true;
                     var data;
-                    if ((data = fs.readFileSync(cfgpath, 'utf8'))) {
+                    if ((data = fs.readFileSync(configPath, 'utf8'))) {
                         $scope.Index.config = angular.fromJson(data);
                         // Set file explorer root node
-                        $scope.FileManager.setBasePath($scope.Main.cfg.workspace);
+                        $scope.FileManager.setBasePath($scope.Index.config.workspace);
                     }
                 }
             }
@@ -41,11 +46,43 @@ angular.module('app')
             }
             $scope.Index.existsConfig = existsConfig
         }
-
         testConfig();
 
-        // File Manager
-        $scope.FileManager = FileManager(getConfig);
+        let saveConfig = function() {
+            try {
+                // write on config file, exists it or not.
+                fs.writeFileSync(configPath, JSON.stringify($scope.Index.config), 'utf8');
+                // Also write R scripts (if cfg present, rscripts present)
+                FileWriter.writeRScripts(app.getPath("userData") + mpath.sep);
+
+                testConfig();
+            }
+            catch (e) {
+                alert('Error: ' + e);
+            }
+        }
+
+        let resetConfig = function() {
+            try {
+                fs.unlinkSync(configPath);
+                console.log('Done');
+            }
+            catch (e) {
+                console.log('Error resetting configuration: ' + e)
+            }
+        }
+
+        $scope.Index.resetConfiguration = function() {
+            resetConfig();
+        }
+
+        $scope.Index.openWorkspaceDialog = function() {
+            let dialog_path;
+            if(dialog_path = dialog.showOpenDialog({"properties": ['openDirectory', 'createDirectory']})) {
+                $scope.Index.config.workspace = dialog_path[0];
+                saveConfig();
+            }
+        }
 
         // Menu
         function togglePreferences() {

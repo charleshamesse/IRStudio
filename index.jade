@@ -68,8 +68,10 @@ body(ng-controller="IndexController")
                         div.form-inline
                             input.rounded(type="text", ng-model="Index.config['workspace']")
                         div.form-inline(align="center")
-                            i.button-icon.fa.fa-search(aria-hidden="true",ng-click="alert('uo')")
+                            i.button-icon.fa.fa-search(aria-hidden="true",ng-click="Index.openWorkspaceDialog()")
                 div.section
                     div.head R Scripts
                 div.section
                     div(ng-show="!$scope.Index.existsConfig") Your configuration needs to be updated.
+                        br
+                        button#reset-configuration(ng-click="Index.resetConfiguration()") Reset configuration
