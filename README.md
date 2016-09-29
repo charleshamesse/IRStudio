@@ -12,8 +12,10 @@ cd IRStudio
 # Install dependencies and run the app
 npm install && npm start
 ```
-
 Learn more about Electron and its API in the [documentation](http://electron.atom.io/docs/latest).
+
+## As a Package
+Coming soon!
 
 ## Example Files
 To get started, you can find example scenarios and explorations in the `examples` folder.
@@ -32,3 +34,4 @@ assets: contains the html views and other visual features
 - js
 - fonts
 ```
+Note the useful feature: View > Toggle Developer Tools.

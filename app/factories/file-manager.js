@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('app')
-    .factory('FileManager', function(){
+    .factory('FileManager', function($filter, FileWriter){
 
         return function(config) {
         const   {dialog} = require('electron').remote,
                 fs = require('fs'),
                 path = require("path"),
-                homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
+                homeDir = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'],
+                optionsCreate = {title: "Create", defaultPath: homeDir, filters: [{ name: 'IR Studio files', extensions: ['ir'] }]};
 
         let FileManager = {},
             basePath
@@ -70,7 +71,10 @@ angular.module('app')
         // Open file or directory
         FileManager.open = function(attr_path) {
             var dialog_path, f, final_path;
-            if(!attr_path) {options
+            if(!attr_path) {
+                if(dialog_path = dialog.showOpenDialog(options)) {
+                    final_path = dialog_path[0];
+                }
             }
             else {
                 if(attr_path == "-r") {
@@ -111,8 +115,7 @@ angular.module('app')
 
         // Open directory
         FileManager.openDir = function(f) {
-            let dir = f.path,
-                currentTree = []
+            let dir = f.path
 
             if(f.angle == "down") { // close it
                 f.nodes = []

@@ -23,7 +23,7 @@ angular.module('app')
         $scope.FileManager = FileManager(getConfig);
 
         $scope.Index = {
-            'displaySettings': false,
+            'displaySettings': true,
             'config': config,
             'existsConfig': false
         }
@@ -103,10 +103,10 @@ angular.module('app')
                         label: 'New Scenario',
                         click: function (item, focusedWindow) {
                             var path = $scope.FileManager.createSetupFile();
-                            if (path) var file = $scope.FileExplorer.open(path);
+                            if (path) var file = $scope.FileManager.open(path);
                             if (file) {
                                 $scope.FileManager.openFile(file);
-                                $scope.FileExplorer.refresh();
+                                $scope.FileManager.refresh();
                                 $scope.$apply();
                             }
                         },
